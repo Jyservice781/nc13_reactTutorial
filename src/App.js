@@ -11,25 +11,29 @@ function App() {
             id: 1,
             title: '집에 가고 싶다',
             content: '집에가고 싶다 ㅠㅠ',
-            nickname: '강사'
+            nickname: '강사',
+            active: true
         },
         {
             id: 2,
             title: '집에 가고 싶다',
             content: '집에가고 싶다 ㅠㅠ',
-            nickname: '학생1'
+            nickname: '학생1',
+            active: false
         },
         {
             id: 3,
             title: '집에 가고 싶다',
             content: '집에가고 싶다 ㄱ-',
-            nickname: '학생2'
+            nickname: '학생2',
+            active: false
         },
         {
             id: 4,
             title: '집에 가고 싶다',
             content: '집에가고 싶다 ㄱ-',
-            nickname: '학생3'
+            nickname: '학생3',
+            active: false
         }
     ]);
 
@@ -77,7 +81,7 @@ function App() {
             ...boards,
             board
         ])
-
+        // 초기화
         setInputs({
             title: '',
             content: '',
@@ -86,11 +90,29 @@ function App() {
 
         // 작성이 끝나고 나서 작성 버튼을 눌렀을때 초기화가 되야함.
         nextId.current += 1;
-
     }
 
     let onDelete = (id) => {
         setBoards(boards.filter(board => board.id !== id))
+        // === / !== -> 데이터 타입 + 값 자체를 검증한다.
+        // === - 값과 데이터타입이 동일할때 true 를 반환한다 (일치)
+        // !== - 두 데이터 타입이 동일 하지 않을때 true 를 반환한다 (불일치)
+    }
+    // filter 매서드
+    // 조건식에 알맞는 부분을
+    // 새로운 배열로 반환한다.
+
+    // 삼항 연산자 (Ternary Operator)
+    // 조건식 ? true 일떄 : false 일때
+
+    let onToggle = (id) => {
+        // setBoards 안에 넣어서 () 안의 일련의 값을 셋팅해줌.
+        setBoards(
+            boards.map(b =>
+                    b.id === id ? {...b, active: !b.active} : b
+                // b.id === id 일때 b. active 의 값만 반전시켜라
+            )
+        )
     }
 
     return (
@@ -102,7 +124,7 @@ function App() {
                 onWrite={onWrite}
                 onChange={onChange}
             />
-            <BoardList boards={boards} onDelete={onDelete}/>
+            <BoardList boards={boards} onDelete={onDelete} onToggle={onToggle}/>
         </div>
     );
 }
