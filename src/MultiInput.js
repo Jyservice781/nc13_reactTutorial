@@ -27,6 +27,7 @@ function MultiInput() {
         })
     }
 
+    //https://leehwarang.github.io/2020/11/29/ref.html
     let passwordInput = useRef();
 
     let [message, setMessage] = useState('')
@@ -57,6 +58,8 @@ function MultiInput() {
             <h1>{message}</h1>
         </BorderBox>
     );
+    // 만약에 수정하기를 만들고 싶다면 Board 에서 input 형식으로 바꾸고 write 하는 식의 반복으로 해주던가
+    // 아니라면 해당 아이디 내가 선택한 아이디를 받고 수정하는 페이지로의 이동이 필요할 듯함.
 }
 
 export default MultiInput;
