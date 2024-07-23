@@ -1,7 +1,8 @@
 import React from 'react';
 import BorderBox from "./BorderBox";
+
 // 비구조적 할당
-function Header({name='게스트', age= -1}){
+function Header({name = '게스트', age = -1}) {
     const HeaderStyle = {
         backgroundColor: 'black',
         fontSize: '50px',
@@ -13,19 +14,16 @@ function Header({name='게스트', age= -1}){
     // const name = '김주영';
     // 렌더링 때문에 두번 찍혀서 출력됨
 
-    return(
+    return (
         <BorderBox>
-        <div style={HeaderStyle} className="AAA">
-            {/* 내부에 자바스크립트를 사용해야 한다면 무조건 {중괄호}로 감싸 줘야함. */}
-            {/*{
-                console.log(age)
-            }*/}
-            여기는 헤더입니다
-            반갑습니다.
-            {name}회원님
+            <div style={HeaderStyle} className="AAA">
+                {/* 내부에 자바스크립트를 사용해야 한다면 무조건 {중괄호}로 감싸 줘야함. */}
+                여기는 헤더입니다
+                반갑습니다.
+                {name}회원님
 
-            { /* 이것은 여러줄 주석입니다. */}
-        </div>
+                { /* 이것은 여러줄 주석입니다. */}
+            </div>
         </BorderBox>
     );
 }

@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import BorderBox from './BorderBox';
 
-function Counter(){
+function Counter() {
     const [number, setNumber] = useState(0);
     // const [value, setValue] = useState(0);
     // const [값, 변동되는 값] = 동적값의 초기값(0);
@@ -22,7 +22,7 @@ function Counter(){
         setNumber(number + 1);
     }
 
-    return(
+    return (
         <BorderBox>
             <div>
                 {number}

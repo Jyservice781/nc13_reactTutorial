@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 import BorderBox from "./BorderBox";
 
 function MultiInput() {
@@ -7,6 +7,10 @@ function MultiInput() {
         username: '',
         password: ''
     })
+
+    // 우리가 일반적으로 자바스크립트로 특정 DOM 객체를 찾을 때에는?
+    // getElementById, querySelector
+    // 리액트 상에서는 저러한 상황에서는 useRef() 를 사용하게 된다. -> react library 에서 꺼내서 사용 가능
 
     let onChange = (e) => {
         // console.log(e.target.name + ": " + e.target.value)
@@ -23,21 +27,32 @@ function MultiInput() {
         })
     }
 
+    let passwordInput = useRef();
+
     let [message, setMessage] = useState('')
+    // 해당 내용이 전역으로 사용 되어야 하는데,
+    // onClick 매서드 안에서만 사용이 되서 value 에 오류를 범하고 있었음.
+
+    let {username, password} = inputs
 
     let onClick = () => {
-       let {username, password} = inputs
         if (username === password) {
             setMessage('로그인 성공')
         } else {
             setMessage('로그인 실패')
+            setInputs({
+                ...inputs,
+                password: ''
+            })
+
+            passwordInput.current.focus()
         }
     }
 
     return (
         <BorderBox>
-            <input placeholder='username' name='username' onChange={onChange} />
-            <input placeholder='password' type='password' name='password' onChange={onChange} />
+            <input placeholder='username' name='username' onChange={onChange} value={username}/>
+            <input placeholder='password' type='password' name='password' value={password} onChange={onChange} ref={passwordInput}/>
             <button onClick={onClick}>log-in</button>
             <h1>{message}</h1>
         </BorderBox>
