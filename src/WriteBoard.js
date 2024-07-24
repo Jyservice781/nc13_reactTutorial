@@ -12,4 +12,4 @@ function WriteBoard({title, content, nickname, onWrite, onChange}){
     )
 }
 
-export default WriteBoard
+export default React.memo(WriteBoard)

@@ -1,7 +1,20 @@
 import './App.css';
-import {useRef, useState} from 'react';
+//useMemo - 변수의 값을 재사용
+//useCallback - 함수의 값을 재사용
+import {useMemo, useRef, useState, useCallback} from 'react';
 import BoardList from "./BoardList";
 import WriteBoard from "./WriteBoard";
+import Counter from "./Counter";
+
+
+function countRead(boards){
+    console.log('읽은 게시물 갯수를 셉니다.')
+    return boards.filter(b => b.active).length;
+    // filter -> 조건식에 부합하는 부분을 제외하고 새로운 배열을 만들어 냄.
+    // length 가 filter 매서드를 통해서
+    // 글을 적을 때마다 렌딩되고 있음
+    // -> 해당 부분을 방지? 하기 위해서 useMemo 를 사용함.
+}
 
 // boardList 에서 직접 관리를 하는게 아닌
 // app 에서 props 형태로 가져오는 식으로 할것임.
@@ -59,17 +72,18 @@ function App() {
     // 다음번 id
     let nextId = useRef(5)
 
-    let onChange = (e) => {
+    let onChange = useCallback((e) => {
+        console.log('onChange 실행')
+
         let {name, value} = e.target;
-        setInputs({
-            // 스프레드 문법
-            // -> 앞 전에 선언되었던 배열을 복사
+        setInputs(inputs => ({
             ...inputs,
             [name]: value
-        })
-    }
+        }))
+    }, [])
 
-    let onWrite = () => {
+    let onWrite = useCallback(() => {
+        console.log('onWrite 실행')
         let board = {
             id: nextId.current,
             title,
@@ -77,10 +91,8 @@ function App() {
             nickname
         }
 
-        setBoards([
-            ...boards,
-            board
-        ])
+        setBoards(boards => boards.concat(board))
+
         // 초기화
         setInputs({
             title: '',
@@ -90,14 +102,17 @@ function App() {
 
         // 작성이 끝나고 나서 작성 버튼을 눌렀을때 초기화가 되야함.
         nextId.current += 1;
-    }
+        // 내부에서 사용하고 있는 state 의 값을 deps 에 적어줌.
+    }, [title, content, nickname])
 
-    let onDelete = (id) => {
-        setBoards(boards.filter(board => board.id !== id))
+    let onDelete = useCallback((id) => {
+        console.log('onDelete 실행')
+        //원 코드- setBoards(boards.filter(board => board.id !== id))
+        setBoards(boards => boards.filter(board => board.id !== id))
         // === / !== -> 데이터 타입 + 값 자체를 검증한다.
         // === - 값과 데이터타입이 동일할때 true 를 반환한다 (일치)
         // !== - 두 데이터 타입이 동일 하지 않을때 true 를 반환한다 (불일치)
-    }
+    }, [])
     // filter 매서드
     // 조건식에 알맞는 부분을
     // 새로운 배열로 반환한다.
@@ -105,18 +120,33 @@ function App() {
     // 삼항 연산자 (Ternary Operator)
     // 조건식 ? true 일떄 : false 일때
 
-    let onToggle = (id) => {
+
+    let onToggle = useCallback((id) => {
+        console.log('onToggle 실행')
+
         // setBoards 안에 넣어서 () 안의 일련의 값을 셋팅해줌.
-        setBoards(
+        setBoards( boards => boards.map(
+                board =>
+                    board.id === id ? {...board, active: !board.active} : board
+            )
+
+            /* 원 코드
             boards.map(b =>
                     b.id === id ? {...b, active: !b.active} : b
                 // b.id === id 일때 b. active 의 값만 반전시켜라
             )
+            */
         )
-    }
+    }, [])
+
+    // 내가 적용한 값을 따로 계산하지 않도록 하는 매서드임. react Hook
+    // useMemo 를 사용하면 hook 을 사용하게 되면 컴포넌트에서만 사용해야함.
+    // [deps] 에는 반드시 사용하고 있는 state 의 값을 지정해주어야한다.
+    let count = useMemo(() => countRead(boards), [boards])
 
     return (
         <div className="App">
+            <Counter />
             <WriteBoard
                 title={title}
                 content={content}
@@ -124,6 +154,7 @@ function App() {
                 onWrite={onWrite}
                 onChange={onChange}
             />
+            <h1>읽은 글의 갯수: {count}</h1>
             <BoardList boards={boards} onDelete={onDelete} onToggle={onToggle}/>
         </div>
     );

@@ -27,7 +27,7 @@ function MultiInput() {
         })
     }
 
-    //https://leehwarang.github.io/2020/11/29/ref.html
+    // https://leehwarang.github.io/2020/11/29/ref.html
     let passwordInput = useRef();
 
     let [message, setMessage] = useState('')

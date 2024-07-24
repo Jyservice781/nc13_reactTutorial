@@ -1,22 +1,47 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import BorderBox from "./BorderBox";
 
-function Board({board, onDelete, onToggle}) {
-    return (
-        <BorderBox>
+let Board = React.memo(
+    function Board({board, onDelete, onToggle}) {
+        // react Hook
+        // 갈고리를 걸어둠. 이팩트를 위한 갈고리 느낌으로 이해하면 됨.
+        useEffect(() => {
+            /*  console.log('board 가 컴포넌트에 셋팅 됨')
+              console.log(board)*/
+            return () => {
+                /*console.log('board 컴포넌트가 화면에 사라지거나 수정 됨')
+                console.log(board)*/
+            }
+            // board 를 예의주시하도록 만들 수 있음
+            // 하나만 지정해서 바꿀 수 있음
+            // [board] 를 주지 않았을 때는 바뀌는 애들 전부 다 감지를 하게 된다.
+            // 수정사항 자체를 감지
+        }, [board])
+        /*
+        useEffect(() => {
+            return () => {
+                console.log('수정수정')
+            }
+        })
+        */
+
+        return (
             <BorderBox>
-                <p style={{
-                    cursor: 'pointer',
-                    backgroundColor: board.active ? "yellow" : "beige"
-                }} onClick={() => onToggle(board.id)}>제목: {board.title}</p>
-                <p>글번호: {board.id}</p>
-                <p>작성자: {board.nickname}</p>
-                <p>내용: {board.content}</p>
+                <BorderBox>
+                    <p style={{
+                        cursor: 'pointer',
+                        backgroundColor: board.active ? "yellow" : "beige"
+                    }} onClick={() => onToggle(board.id)}>제목: {board.title}</p>
+                    <p>글번호: {board.id}</p>
+                    <p>작성자: {board.nickname}</p>
+                    <p>내용: {board.content}</p>
+                </BorderBox>
+                <button onClick={() => onDelete(board.id)}>삭제하기</button>
             </BorderBox>
-            <button onClick={() => onDelete(board.id)}>삭제하기</button>
-        </BorderBox>
-    )
-}
+        )
+    }
+)
+
 
 function BoardList({boards, onDelete, onToggle}) {
     /*
@@ -46,4 +71,6 @@ function BoardList({boards, onDelete, onToggle}) {
     )
 }
 
-export default BoardList
+
+
+export default React.memo(BoardList)
