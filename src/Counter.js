@@ -17,7 +17,7 @@ function Counter() {
    */
 
     // 해당 글자가 계속적으로 렌더링 되기
-    // 위해서는 상태값으로 관리를 해야한다.
+    // 위해서는 상태값으로 관리를 해야한다. -> useState, useReducer
 
     let [number, dispatch] = useReducer(reducer, 0)
 

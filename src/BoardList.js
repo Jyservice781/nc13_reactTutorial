@@ -1,8 +1,10 @@
-import React, {useEffect} from 'react';
+import React, {useContext, useEffect} from 'react';
 import BorderBox from "./BorderBox";
+import {BoardDispatch} from "./App";
 
 let Board = React.memo(
-    function Board({board, onDelete, onToggle}) {
+    function Board({board}) {
+        let dispatch = useContext(BoardDispatch)
         // react Hook
         // 갈고리를 걸어둠. 이팩트를 위한 갈고리 느낌으로 이해하면 됨.
         useEffect(() => {
@@ -31,19 +33,29 @@ let Board = React.memo(
                     <p style={{
                         cursor: 'pointer',
                         backgroundColor: board.active ? "yellow" : "beige"
-                    }} onClick={() => onToggle(board.id)}>제목: {board.title}</p>
+                    }} onClick={() => {
+                        dispatch({
+                            type: 'TOGGLE_TITLE',
+                            id: board.id
+                        })
+                    }}>제목: {board.title}</p>
                     <p>글번호: {board.id}</p>
                     <p>작성자: {board.nickname}</p>
                     <p>내용: {board.content}</p>
                 </BorderBox>
-                <button onClick={() => onDelete(board.id)}>삭제하기</button>
+                <button onClick={() => {
+                    dispatch({
+                        type: 'DELETE_BOARD',
+                        id: board.id
+                    })
+                }}>삭제하기</button>
             </BorderBox>
         )
     }
 )
 
 
-function BoardList({boards, onDelete, onToggle}) {
+function BoardList({boardArray}) {
     /*
       정적 할당을
     // 동적할당으로 변경해줄 것임.
@@ -64,13 +76,12 @@ function BoardList({boards, onDelete, onToggle}) {
 
     return (
         <BorderBox>
-            {boards.map((b) => (
-                <Board board={b} key={b.id} onDelete={onDelete} onToggle={onToggle}/>
+            {boardArray.map((b) => (
+                <Board board={b} key={b.id}/>
             ))}
         </BorderBox>
     )
 }
-
 
 
 export default React.memo(BoardList)
