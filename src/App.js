@@ -57,8 +57,8 @@ function reducer(state, action) {
         case 'TOGGLE_TITLE':
             return {
                 ...state,
-                boardArray: state.boardArray.map(b =>
-                    b.id === action.id ? {...b, active: !b.active} : b
+                boardArray: state.boardArray.map(
+                    b => b.id === action.id ? {...b, active: !b.active} : b
                 )
             }
         case 'DELETE_BOARD':
@@ -68,13 +68,12 @@ function reducer(state, action) {
                     b => b.id !== action.id
                 )
             }
-
         default:
             return state
     }
 }
 
-// !!!!!!!!!! Context 사용 !!!!!!!!!!!!!!!
+// !!!!!!!!!! Context 사용  !!!!!!!!!!!!!!!
 export let BoardDispatch = React.createContext(null)
 
 // boardList 에서 직접 관리를 하는게 아닌
@@ -234,20 +233,8 @@ function App() {
 
     },[title, content, nickname])
 
-    let onToggle = useCallback((id) => {
-        dispatch({
-            type: 'TOGGLE_TITLE',
-            id
-        })
-    }, [])
-
-    let onDelete = useCallback((id) => {
-        dispatch({
-            type: 'DELETE_BOARD',
-            id
-        })
-    }, [])
-
+    // count -> board 의 읽은 갯수를 count 하기 위한 변수임.
+    // useMemo 를 사용하여 성능 최적화를 했다고 볼 수 있음.
     let count = useMemo(() => countRead(boardArray), [boardArray])
 
     return (
