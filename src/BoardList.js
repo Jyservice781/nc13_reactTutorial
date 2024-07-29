@@ -83,5 +83,4 @@ function BoardList({boardArray}) {
     )
 }
 
-
 export default React.memo(BoardList)

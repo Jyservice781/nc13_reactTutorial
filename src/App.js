@@ -1,9 +1,12 @@
 import './App.css';
-//useMemo - 변수의 값을 재사용
-//useCallback - 함수의 값을 재사용
 import React, {useCallback, useMemo, useReducer, useRef} from 'react';
-import BoardList from "./BoardList";
-import WriteBoard from "./WriteBoard";
+import {Link, Route, Routes} from "react-router-dom";
+import Hello from "./Hello";
+import Hello2 from "./Hello2";
+import ShowGetParam from "./ShowGetParam";
+import BoardList2 from "./BoardList2";
+import Board2 from "./Board2";
+import NotFound from "./NotFound";
 
 function countRead(boardArray) {
     return boardArray.filter(b => b.active).length;
@@ -230,8 +233,7 @@ function App() {
                 nickname
             }
         })
-
-    },[title, content, nickname])
+    }, [title, content, nickname])
 
     // count -> board 의 읽은 갯수를 count 하기 위한 변수임.
     // useMemo 를 사용하여 성능 최적화를 했다고 볼 수 있음.
@@ -239,17 +241,39 @@ function App() {
 
     return (
         <BoardDispatch.Provider value={dispatch}>
-        <div className="App">
-            <WriteBoard
-                title={title}
-                content={content}
-                nickname={nickname}
-                onChange={onChange}
-                onWrite={onWrite}
-            />
-            <h1>읽은 글의 갯수: {count} </h1>
-            <BoardList boardArray={boardArray} />
-        </div>
+            <div className="App">
+                <Routes>
+                    <Route path="/" element={<Hello/>}/>
+                    <Route path="/hello2/:name" element={<Hello2/>}/>
+                    {/*
+                        element 와 Component 의 차이는 별로
+                        없지만 element 는 내부에 <></> 를 표시해주어야하고
+                        Component 는 그냥 문자만 와도 상관이 없다.
+                    */}
+                    <Route path="/get" element={<ShowGetParam />}/>
+                    {/*하나의 경로에서 list 와 showOne 을 처리할 수 있다.*/}
+                    <Route path="/board" element={<BoardList2 />} >
+                        <Route path={":id"} element={<Board2 />}/>
+                    </Route>
+                    {/*
+                        기본적으로 spring security 와 같이 경로를 위에서 부터 읽기 때문에
+                        에러를 처리할 때 *를 사용하여 notfound 처리를 해준다.
+                     */}
+                    <Route path="*" element={<NotFound />} />
+                </Routes>
+               {/* <a href={"/"}>인덱스</a>
+                   <a href={"/hello2"}>hello2 로</a>
+                   link to 는 해당 경로로 이동하도록 한다는 의미이다.
+               */}
+                <Link to={"/hello2/김맹구"}>Hello2로</Link>
+                <br/>
+                <Link to={"/hello2/김짱구"}>Hello2로</Link>
+                <br/>
+                <Link to={"/hello2/"}>Hello2로 (잘못된 링크)</Link>
+                <br/>
+                <Link to={"/board"}>게시판 목록으로</Link>
+            </div>
+
         </BoardDispatch.Provider>
     );
 }
